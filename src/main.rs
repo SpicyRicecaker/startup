@@ -54,7 +54,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .args(&[
             "--new-window",
             // should be changed probably
-            // "https://open.spotify.com/artist/34QbYbTlUCLkZsQ8QmacV9/discography/album"
+            "https://open.spotify.com/artist/34QbYbTlUCLkZsQ8QmacV9/discography/album"
         ])
         .spawn()?;
 
