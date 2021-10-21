@@ -27,7 +27,7 @@ type Result<T> = std::result::Result<T, Box<dyn Error>>;
 
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
 #[repr(u8)]
-pub enum Await {
+pub enum ExecType {
   Spawn = 0,
   Output = 1,
 }
@@ -40,35 +40,62 @@ pub enum ActionType {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct ActionSpecificActions {
-  command: String,
-  exit_code: Await,
+pub struct Config {
+  program: String,
+  exec_type: ExecType,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Action {
   name: String,
   icon: String,
-  types: ActionType,
-  props: ActionSpecificActions,
+  action_type: ActionType,
+  config: Config,
   run: bool,
 }
 
 impl Action {
   fn run(&self) -> Result<()> {
-    //   doesn't matter for now lol
-    let mut args = self.props.command.split_whitespace();
+    // quotes for when you want to include spaces
+    // let mut args = self.config.program.split_whitespace();
+    let mut args: Vec<String> = Vec::new();
+    let mut buffer = Vec::new();
+    let mut in_quotes = false;
+
+    self.config.program.chars().for_each(|c| {
+      println!("{},{:#?}", c, &args);
+      match c {
+        c if c.is_whitespace() => {
+          if !in_quotes && !buffer.is_empty() {
+            args.push(buffer.iter().collect());
+            buffer.clear();
+          } else {
+            buffer.push(c);
+          }
+        }
+        '"' => {
+          in_quotes = !in_quotes;
+        }
+        _ => buffer.push(c),
+      }
+    });
+    if !buffer.is_empty() {
+      args.push(buffer.iter().collect());
+    }
+
+    let mut args = args.iter();
 
     // TODO too lazy to think of a way to replace unwrap rn
     let mut command = Command::new(args.next().unwrap());
+
     let args = args.into_iter().collect::<Vec<_>>();
     command.args(&args);
 
-    match self.props.exit_code {
-      Await::Spawn => {
+    match self.config.exec_type {
+      ExecType::Spawn => {
         command.spawn()?;
       }
-      Await::Output => {
+      ExecType::Output => {
         command.output()?;
       }
     }
@@ -78,8 +105,8 @@ impl Action {
 }
 
 pub fn run_fn() -> Result<()> {
-    let actions = load_fn()?;
-    run_actions(&actions)
+  let actions = load_fn()?;
+  run_actions(&actions)
 }
 
 fn run_actions(actions: &[Action]) -> Result<()> {

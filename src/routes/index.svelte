@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Action, Await } from '$lib/types';
+	import { Action, ExecType } from '$lib/types';
 
 	import { onMount } from 'svelte';
 	import { new_action } from '$lib/lib';
@@ -53,20 +53,20 @@
 				</div>
 				<div>
 					<label for="command"><code>>:</code></label>
-					<input bind:value={action.props.command} id="command" type="text" />
+					<input bind:value={action.config.program} id="command" type="text" />
 				</div>
 				<div>
 					<label for="output">Output</label>
 					<input
-						bind:group={action.props.exit_code}
-						value={Await.Output}
+						bind:group={action.config.exec_type}
+						value={ExecType.Output}
 						id="output"
 						type="radio"
 					/>
 				</div>
 				<div>
 					<label for="spawn">Spawn</label>
-					<input bind:group={action.props.exit_code} value={Await.Spawn} id="spawn" type="radio" />
+					<input bind:group={action.config.exec_type} value={ExecType.Spawn} id="spawn" type="radio" />
 				</div>
 				<button
 					on:click={() => {
@@ -82,7 +82,7 @@
 		{#each actions as action, i}
 			<div>
 				<div class="name">{action.name}</div>
-				<code>{action.props.command}</code>
+				<code>{action.config.program}</code>
 				<div>
 					<input bind:checked={action.run} type="checkbox" />
 				</div>

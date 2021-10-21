@@ -1,8 +1,8 @@
 pub mod run;
 
 use run::Action;
-use std::fs;
 use std::{error::Error, path::PathBuf};
+use std::{fs, path::Path};
 use tauri::api::path;
 
 pub fn load_fn() -> Result<Vec<Action>, Box<dyn std::error::Error>> {
@@ -11,15 +11,20 @@ pub fn load_fn() -> Result<Vec<Action>, Box<dyn std::error::Error>> {
   if let Some(mut path) = path {
     path.push("startup");
     path.push("config.json");
-    let config_string = fs::read_to_string(path)?;
-    let obj: Vec<Action> = serde_json::from_str(&config_string)?;
-    Ok(obj)
+    // ensure exists
+    if Path::exists(&path) {
+      let config_string = fs::read_to_string(path)?;
+      let obj: Vec<Action> = serde_json::from_str(&config_string)?;
+      Ok(obj)
+    } else {
+      // otherwise write an empty config
+      let vec: Vec<Action> = Vec::new();
+      let config_string = serde_json::to_string(&vec)?;
+      save_fn(&config_string)?;
+      Ok(vec)
+    }
   } else {
-    // write an empty config
-    let vec: Vec<Action> = Vec::new();
-    let config_string = serde_json::to_string(&vec)?;
-    save_fn(&config_string)?;
-    Ok(vec)
+    Err(String::from("Unable to access configuration directory").into())
   }
 }
 

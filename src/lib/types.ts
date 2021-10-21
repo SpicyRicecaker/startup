@@ -3,20 +3,20 @@ export enum ActionType {
     GitPull
 }
 
-export enum Await {
+export enum ExecType {
     Spawn,
     Output
 }
 
-export interface ActionSpecificActions {
-    command: string,
-    exit_code: Await
+export interface Config {
+    program: string,
+    exec_type: ExecType
 }
 
 export interface Action {
     name: string,
     icon: string,
-    types: ActionType,
-    props: ActionSpecificActions,
+    action_type: ActionType,
+    config: Config,
     run: boolean
 }
