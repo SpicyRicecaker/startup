@@ -3,23 +3,30 @@
   windows_subsystem = "windows"
 )]
 
-use app::run::Action;
+use app::{load_fn, run::Action, save_fn};
 
 #[tauri::command]
+/// Error handling on this func is bad lol
 fn save(actions: String) {
-  let rando: Vec<Action> = match serde_json::from_str(&actions) {
+  if let Err(e) = save_fn(&actions) {
+    eprintln!("{}", e);
+  }
+}
+
+#[tauri::command]
+fn load() -> Vec<Action> {
+  match load_fn() {
     Ok(o) => o,
     Err(e) => {
       eprintln!("{}", e);
       panic!();
-    },
-  };
-  dbg!(rando);
+    }
+  }
 }
 
 fn main() {
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![save])
+    .invoke_handler(tauri::generate_handler![save, load])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

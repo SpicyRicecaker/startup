@@ -4,13 +4,11 @@
 	import { onMount } from 'svelte';
 	import { new_action } from '$lib/lib';
 	import { tauri } from '$lib/lib';
-	import { compute_rest_props, text } from 'svelte/internal';
 
 	let actions: Action[] = [];
 	onMount(async () => {
 		// load config file, pref serde
-		// actions = await (await invoke)('read');
-		// actions = tauri.invoke('hello_world');
+		actions = await tauri.invoke('load');
 	});
 
 	let edit_mode: boolean = false;
