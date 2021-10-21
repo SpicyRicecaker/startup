@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Action } from '$lib/types';
+	import { Action, Await } from '$lib/types';
 
 	import { onMount } from 'svelte';
 	import { new_action } from '$lib/lib';
@@ -21,6 +21,15 @@
 			let res = await tauri.invoke('save', { actions: JSON.stringify(actions) });
 		}
 		edit_mode = !edit_mode;
+	};
+
+	const launch = async () => {
+		// save all changes before
+		actions = actions;
+		let _ = await tauri.invoke('save', { actions: JSON.stringify(actions) });
+
+		let res = await tauri.invoke('run');
+		console.log(res);
 	};
 </script>
 
@@ -45,6 +54,19 @@
 					<label for="command"><code>>:</code></label>
 					<input bind:value={action.props.command} id="command" type="text" />
 				</div>
+				<div>
+					<label for="output">Output</label>
+					<input
+						bind:group={action.props.exit_code}
+						value={Await.Output}
+						id="output"
+						type="radio"
+					/>
+				</div>
+				<div>
+					<label for="spawn">Spawn</label>
+					<input bind:group={action.props.exit_code} value={Await.Spawn} id="spawn" type="radio" />
+				</div>
 				<button
 					on:click={() => {
 						actions = [...actions.slice(0, i), ...actions.slice(i + 1)];
@@ -54,7 +76,7 @@
 		{/each}
 	</div>
 {:else}
-	<button>launch</button>
+	<button on:click={launch}>launch</button>
 	<div class="grid">
 		{#each actions as action, i}
 			<div>

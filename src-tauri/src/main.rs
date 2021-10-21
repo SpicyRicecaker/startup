@@ -3,7 +3,7 @@
   windows_subsystem = "windows"
 )]
 
-use app::{load_fn, run::Action, save_fn};
+use app::{load_fn, run::{Action, run_fn}, save_fn};
 
 #[tauri::command]
 /// Error handling on this func is bad lol
@@ -24,9 +24,19 @@ fn load() -> Vec<Action> {
   }
 }
 
+#[tauri::command]
+fn run() -> u32 {
+   if let Err(e) = run_fn() {
+    eprintln!("{}", e);
+  } 
+  // 0 for success
+  // 1 for failure
+  0
+}
+
 fn main() {
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![save, load])
+    .invoke_handler(tauri::generate_handler![save, load, run])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
