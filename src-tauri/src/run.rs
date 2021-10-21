@@ -63,7 +63,7 @@ impl Action {
     let mut in_quotes = false;
 
     self.config.program.chars().for_each(|c| {
-      println!("{},{:#?}", c, &args);
+      // println!("{},{:#?}", c, &args);
       match c {
         c if c.is_whitespace() => {
           if !in_quotes && !buffer.is_empty() {
