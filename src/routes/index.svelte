@@ -3,7 +3,8 @@
 
 	import { onMount } from 'svelte';
 	import { new_action } from '$lib/lib';
-	import { tauri } from '$lib/lib';
+
+	const tauri = (window as any).__TAURI__ as typeof import('@tauri-apps/api/tauri');
 
 	let actions: Action[] = [];
 	onMount(async () => {

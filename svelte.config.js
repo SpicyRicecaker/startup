@@ -8,15 +8,18 @@ const config = {
 	preprocess: preprocess(),
 
 	kit: {
-		// hydrate the <div id="svelte"> element in src/app.html
+		// hydrate the <div id="svelte"> element in src/index.html
 		adapter: adapter({
 			// default options are shown
 			pages: 'build',
 			assets: 'build',
-			fallback: 'app.html'
+			fallback: 'index.html'
 		}),
 		ssr: false,
-		target: '#svelte',
+		files: {
+			template: 'src/index.html'
+		},
+		target: '#svelte'
 	}
 };
 
