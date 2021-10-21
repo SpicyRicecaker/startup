@@ -11,6 +11,8 @@
 
 - (CRITICAL) Cannot change order of execution
   - [ ] Implement a drag and drop feature
+- (CRITICAL) We cannot currently tell the result of a git pull
+    - [ ] `run()` returns an array of strings. In svelte, we have a scrolling console that logs the `name` and `path` of every `spawn`, and the full output for every `output`
 -  [ ] Toggle elements on and off based off of click on full box (not just checkbox)
 
 ## Features
