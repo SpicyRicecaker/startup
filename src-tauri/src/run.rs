@@ -3,6 +3,8 @@ use std::error::Error;
 use std::process::{self, Command};
 
 use tauri::api::path;
+use serde::{Serialize, Deserialize};
+use serde_repr::{Serialize_repr, Deserialize_repr};
 
 use crate::{code_path, logseq_path};
 
@@ -20,6 +22,37 @@ use crate::{code_path, logseq_path};
 // Move firefox spotify
 
 // and close alarm
+
+#[derive(Debug, Serialize_repr, Deserialize_repr)]
+#[repr(u8)]
+pub enum Await {
+    Spawn = 0,
+    Output = 1
+}
+
+#[derive(Debug, Serialize_repr, Deserialize_repr)]
+#[repr(u8)]
+pub enum ActionType {
+    Open = 0,
+    GitPull = 1
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ActionSpecificActions {
+    command: String,
+    exit_code: Await
+}
+
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Action {
+    name: String,
+    icon: String,
+    types: ActionType,
+    props: ActionSpecificActions,
+    run: bool
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let home_dir = path::home_dir().expect("home dir not set");
     let git_dir = {
