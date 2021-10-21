@@ -1,4 +1,28 @@
-# Back
+# TODOS
+
+## Bugs
+
+- Overly long lines bleed off the page.
+  - [ ] Include ellipses for overly long lines of code
+- Current editing exp. makes it difficult to add long lines of text
+  - [ ] Edits to trigger a fullscreen overlaid textbox
+
+## Primary 
+
+- (CRITICAL) Cannot change order of execution
+  - [ ] Implement a drag and drop feature
+-  [ ] Toggle elements on and off based off of click on full box (not just checkbox)
+
+## Features
+
+- No icons
+  - Have svelte `Images` make a call to `image` func ()
+- No syntax higlighting
+  - [ ] Use `prism.js` to highlight the shell arguments
+
+# 10.21.2021
+
+## Back
 
 - Declare `Action` struct
   - name: String
@@ -11,12 +35,12 @@
     - GitPull
       -  git-dir: String
 
-## Serialization
+### Serialization
 
 - Use serde_json for saving user config
 - define `save_config()` function that gets called
 
-# Front
+## Front
  
 - Also declare the same `Action` struct 
   - (any way to import rust struct into typescript?)
