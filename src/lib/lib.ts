@@ -1,0 +1,1 @@
+export const tauri = (window as any).__TAURI__ as typeof import('@tauri-apps/api/tauri');
