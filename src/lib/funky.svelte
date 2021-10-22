@@ -52,6 +52,7 @@
 		// must be absolutely positioned
 		color: white;
 		background-color: black;
+        opacity: 70%;
 		border: none;
 		outline: none;
 		&:hover {
