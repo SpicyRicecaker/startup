@@ -6,17 +6,20 @@
         {
             "label": "Start Dev",
             "type": "shell",
-            "command": "yarn tauri dev"
+            "command": "yarn tauri dev",
+            "problemMatcher": []
         },
         {
             "label": "Build Debug Binary",
             "type": "shell",
-            "command": "yarn tauri build --debug"
+            "command": "yarn tauri build --debug",
+            "problemMatcher": []
         },
         {
             "label": "Build Release Binary",
             "type": "shell",
-            "command": "yarn tauri build"
+            "command": "yarn tauri build",
+            "problemMatcher": []
         }
     ]
 }

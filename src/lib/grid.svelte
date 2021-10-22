@@ -1,16 +1,20 @@
 <script lang="ts">
 	import { Action, ExecType } from './types';
 	import { new_action } from '$lib/lib';
+	import Funky from './funky.svelte';
 
 	export let actions: Action[];
 	export let edit_mode: boolean;
+
+	const on_drag_start = (ev: DragEvent) => {
+		ev.dataTransfer.setData('text/plain', (ev.target as HTMLElement).innerHTML);
+	}
 </script>
 
 {#if edit_mode}
-	<button on:click={() => (actions = [...actions, new_action()])}>+</button>
 	<div class="grid">
 		{#each actions as action, i}
-			<div>
+			<div class="edit" on:dragstart={(e) => on_drag_start(e)}>
 				<div>
 					<label for="name">n:</label>
 					<input bind:value={action.name} id="name" type="text" />
@@ -20,22 +24,24 @@
 					<input bind:value={action.config.program} id="command" type="text" />
 				</div>
 				<div>
-					<label for="output">Output</label>
-					<input
-						bind:group={action.config.exec_type}
-						value={ExecType.Output}
-						id="output"
-						type="radio"
-					/>
-				</div>
-				<div>
-					<label for="spawn">Spawn</label>
-					<input
-						bind:group={action.config.exec_type}
-						value={ExecType.Spawn}
-						id="spawn"
-						type="radio"
-					/>
+					<span>
+						<label for="output">Output</label>
+						<input
+							bind:group={action.config.exec_type}
+							value={ExecType.Output}
+							id="output"
+							type="radio"
+						/>
+					</span>
+					<span>
+						<label for="spawn">Spawn</label>
+						<input
+							bind:group={action.config.exec_type}
+							value={ExecType.Spawn}
+							id="spawn"
+							type="radio"
+						/>
+					</span>
 				</div>
 				<button
 					on:click={() => {
@@ -44,11 +50,13 @@
 				>
 			</div>
 		{/each}
+		<Funky on:click={() => (actions = [...actions, new_action()])} label="+" />
 	</div>
 {:else}
 	<div class="grid">
 		{#each actions as action, i}
 			<div
+				class="display"
 				on:click={() => {
 					action.run = !action.run;
 				}}
@@ -73,7 +81,7 @@
 		gap: 1rem;
 		// nonstandard
 		user-select: none;
-		& > div {
+		& > .display {
 			&:hover {
 				cursor: pointer;
 			}
@@ -82,6 +90,11 @@
 				overflow: hidden;
 				text-overflow: ellipsis;
 				opacity: 50%;
+			}
+		}
+		& > .edit {
+			&:hover {
+				cursor: pointer;
 			}
 		}
 	}

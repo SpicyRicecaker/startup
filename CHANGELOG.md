@@ -13,7 +13,10 @@
   - [ ] Implement a drag and drop feature
 - (CRITICAL) We cannot currently tell the result of a git pull
     - [ ] `run()` returns an array of strings. In svelte, we have a scrolling console that logs the `name` and `path` of every `spawn`, and the full output for every `output`
--  [ ] Toggle elements on and off based off of click on full box (not just checkbox)
+- (CRITICAL) Cannot currently have mutliline commands
+  - There's a couple of ways to approach this. One is to allow multine commands, another is to allow grouping (so multiple commands can be run together)
+  
+-  [x] Toggle elements on and off based off of click on full box (not just checkbox)
 
 ## Features
 
