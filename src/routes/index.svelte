@@ -1,12 +1,14 @@
 <script lang="ts">
-	import { Action, ExecType } from '$lib/types';
+	import type { Action } from '$lib/types';
+	import Grid from '$lib/grid.svelte';
+	import Funky from '$lib/funky.svelte';
 
 	import { onMount } from 'svelte';
-	import { new_action } from '$lib/lib';
 
 	const tauri = (window as any).__TAURI__ as typeof import('@tauri-apps/api/tauri');
 
 	let actions: Action[] = [];
+
 	onMount(async () => {
 		// load config file, pref serde
 		actions = await tauri.invoke('load');
@@ -34,70 +36,40 @@
 	};
 </script>
 
-<button on:click={save}>
-	{#if edit_mode}
-		save
-	{:else}
-		edit
-	{/if}
-</button>
-
-{#if edit_mode}
-	<button on:click={() => (actions = [...actions, new_action()])}>+</button>
-	<div class="grid">
-		{#each actions as action, i}
-			<div>
-				<div>
-					<label for="name">n:</label>
-					<input bind:value={action.name} id="name" type="text" />
-				</div>
-				<div>
-					<label for="command"><code>>:</code></label>
-					<input bind:value={action.config.program} id="command" type="text" />
-				</div>
-				<div>
-					<label for="output">Output</label>
-					<input
-						bind:group={action.config.exec_type}
-						value={ExecType.Output}
-						id="output"
-						type="radio"
-					/>
-				</div>
-				<div>
-					<label for="spawn">Spawn</label>
-					<input bind:group={action.config.exec_type} value={ExecType.Spawn} id="spawn" type="radio" />
-				</div>
-				<button
-					on:click={() => {
-						actions = [...actions.slice(0, i), ...actions.slice(i + 1)];
-					}}>x</button
-				>
-			</div>
-		{/each}
+<div class="grid">
+	<div class="control">
+		<Funky on:click={save} label={edit_mode ? "save" : "edit"}/>
+		{#if !edit_mode}
+			<Funky on:click={launch} label="launch"/>
+		{/if}
 	</div>
-{:else}
-	<button on:click={launch}>launch</button>
-	<div class="grid">
-		{#each actions as action, i}
-			<div>
-				<div class="name">{action.name}</div>
-				<code>{action.config.program}</code>
-				<div>
-					<input bind:checked={action.run} type="checkbox" />
-				</div>
-			</div>
-		{/each}
+	<div class="body">
+		<Grid bind:actions bind:edit_mode />
 	</div>
-{/if}
+</div>
 
 <style lang="scss">
-	.grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		grid-auto-rows: minmax(100px, auto);
+	:global(#svelte, html, body) {
+		width: 100%;
+		height: 100%;
 	}
-	.name {
-		font-size: 1.2rem;
+	:global(body) {
+		margin: 0;
+	}
+
+	.grid {
+		width: 100%;
+
+		display: grid;
+		grid-template-rows: minmax(0, 1fr) 10fr;
+
+		& > .control  {
+			padding: 1rem;
+			display: grid;
+			grid-template-columns: auto 1fr;
+		}
+		& > .body  {
+			padding: 1rem;
+		}
 	}
 </style>
